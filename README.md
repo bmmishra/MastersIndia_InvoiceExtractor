@@ -21,4 +21,5 @@ This project demonstrates a basic invoice information extraction system using Py
 - **Image/PDF Processing:** `Pillow` (PIL), `pdf2image`
 - **UI:** HTML, CSS
 
-## Project Structure
+## Scope of Improvement
+- Accuracy of Extraction will be increased by fine tunning on some particular dataset
