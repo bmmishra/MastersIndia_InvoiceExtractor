@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+dist/
+build/
+*.whl
+
+# Python virtual environment
+venv/
+# Flask specific
+instance/
+
+# Uploaded files
+# This is crucial for your project as you don't want to commit user uploads
+uploads/
+
+# OS and IDE files
+.DS_Store
+.vscode/ # VS Code specific files
+.idea/   # IntelliJ/PyCharm specific files
+*.log
+*.swp
+*.swo
+
+# Environment variables
+.env
+.flaskenv
+
+# Tesseract and Poppler related (if any temporary files are created)
+# No specific files here usually, but if temporary files are generated, list them.
+# e.g., if any OCR temp files are created in the project root
+# *.tiff
+# *.ppm

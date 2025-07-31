@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masters India Invoice Extractor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Masters India Invoice Information Extraction</h1>
+        <form method="POST" enctype="multipart/form-data">
+            <div class="upload-section">
+                <label for="file-upload" class="custom-file-upload">
+                    Choose Invoice Image/PDF
+                </label>
+                <input id="file-upload" type="file" name="file" accept=".jpg, .jpeg, .png, .pdf"
+                    onchange="displayFileName(this)">
+                <span id="file-name">No file chosen</span>
+                <button type="submit">Extract Information</button>
+            </div>
+        </form>
+
+        {% if error %}
+        <p class="error-message">{{ error }}</p>
+        {% endif %}
+
+        {% if extracted_data %}
+        <h2>Extraction Results:</h2>
+        <div class="results-container">
+            <div class="image-preview">
+                {% if uploaded_image_name %}
+                <h3>Uploaded Invoice:</h3>
+                <img src="{{ url_for('uploaded_file', filename=uploaded_image_name) }}" alt="Uploaded Invoice"
+                    class="invoice-image">
+                {% endif %}
+            </div>
+            <div class="extracted-details">
+                {% if extracted_data.error %}
+                <p class="error-message">{{ extracted_data.error }}</p>
+                {% if extracted_data.full_text_ocr %}
+                <h3>Raw OCR Text (Fallback):</h3>
+                <pre>{{ extracted_data.full_text_ocr }}</pre>
+                {% endif %}
+                {% else %}
+                <h3>Key Information:</h3>
+                <ul>
+                    <li><strong>Invoice Number:</strong> {{ extracted_data.invoice_number }}</li>
+                    <li><strong>Invoice Date:</strong> {{ extracted_data.invoice_date }}</li>
+                    <li><strong>Total Amount:</strong> {{ extracted_data.raw_dl_answers['What is the total amount?'] if
+                        'raw_dl_answers' in extracted_data else 'N/A' }}</li>
+                    <li><strong>Vendor Name:</strong> {{ extracted_data.raw_dl_answers['What is the vendor name?'] if
+                        'raw_dl_answers' in extracted_data else 'N/A' }}</li>
+                    <li><strong>Bill To Address:</strong> {{ extracted_data.raw_dl_answers['What is the bill to
+                        address?'] if 'raw_dl_answers' in extracted_data else 'N/A' }}</li>
+                    <li><strong>Amount Due:</strong> {{ extracted_data.raw_dl_answers['What is the amount due?'] if
+                        'raw_dl_answers' in extracted_data else 'N/A' }}</li>
+                </ul>
+
+                {# Removed the Raw Deep Learning Answers section as requested #}
+
+                <h3>Line Items:</h3>
+                {% if extracted_data.line_items and extracted_data.line_items | length > 0 %}
+                <ul>
+                    {% for item in extracted_data.line_items %}
+                    <li>{{ item.raw_line }}</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p>No structured line items extracted. Model provided: "{{ extracted_data.raw_dl_answers['What are the
+                    line items?'] if 'raw_dl_answers' in extracted_data else 'N/A' }}".</p>
+                {% endif %}
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function displayFileName(input) {
+            const fileNameSpan = document.getElementById('file-name');
+            if (input.files.length > 0) {
+                fileNameSpan.textContent = input.files[0].name;
+            } else {
+                fileNameSpan.textContent = 'No file chosen';
+            }
+        }
+    </script>
+</body>
+
+</html>
